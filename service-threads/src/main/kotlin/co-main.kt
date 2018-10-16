@@ -9,25 +9,27 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
 
-suspend fun main() {
+suspend fun main() = coroutineScope {
+
   usedRam()
 
-  coroutineScope {
-    val coroutines = 1_000_000
-    val barrier = CyclicBarrier(coroutines + 1)
-    repeat(coroutines) {
-      launch {
-        barrier.await()
-        suspendEternal()
-      }
+  val coroutines = 1_000_000
+  val barrier = CyclicBarrier(coroutines + 1)
+  repeat(coroutines) {
+    launch {
+      barrier.await()
+      suspendEternal()
     }
-
-    barrier.await()
-    usedRam()
-    println("All coroutines are here")
-    delay(400)
-    coroutineContext.cancel()
   }
+
+  barrier.await()
+  usedRam()
+
+  println("All coroutines are here")
+  delay(400)
+  coroutineContext.cancel()
+
+  Unit
 }
 
 

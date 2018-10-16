@@ -11,5 +11,4 @@ suspend fun main() = coroutineScope {
       delay(100)
     }
   }
-  Unit
 }

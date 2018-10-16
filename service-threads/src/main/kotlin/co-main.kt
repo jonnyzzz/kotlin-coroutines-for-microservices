@@ -2,7 +2,6 @@ package org.jonnyzzz.threads
 
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.Continuation
@@ -26,34 +25,30 @@ suspend fun main() = coroutineScope {
   usedRam()
 
   println("All coroutines are here")
-  delay(400)
   coroutineContext.cancel()
 
   Unit
 }
 
 
-class CyclicBarrier(val count: Int) {
+private class CyclicBarrier(private val count: Int) {
   private val callbacks = mutableListOf<Continuation<Unit>>()
-  suspend fun await() = suspendCancellableCoroutine<Unit> { cont ->
-    val size = synchronized(callbacks) {
-      callbacks += cont
-      callbacks.size
-    }
 
-    if (size >= count) {
-      val result = synchronized(callbacks) {
+  suspend fun await() = suspendCancellableCoroutine<Unit> { cont ->
+    synchronized(callbacks) {
+      callbacks += cont
+      if (callbacks.size >= count) {
         val result = callbacks.toList()
         callbacks.clear()
         result
+      } else {
+        emptyList()
       }
-
-      result.forEach { it.resume(Unit) }
-    }
+    }.forEach { it.resume(Unit) }
   }
 }
 
-suspend fun suspendEternal() = suspendCancellableCoroutine<Unit> {  }
+suspend fun suspendEternal() = suspendCancellableCoroutine<Unit> { }
 
 
 fun usedRam() {

@@ -1,15 +1,18 @@
 package org.jonnyzzz.threads
 
 import java.util.concurrent.CyclicBarrier
+import java.util.concurrent.Semaphore
 
 fun main(args: Array<String>) {
   println("Threads example")
 
   val threads = 10_000
   val barrier = CyclicBarrier(threads + 1)
+  val sem = Semaphore(0)
   repeat(threads) {
     Thread{
       barrier.await()
+      sem.acquire()
     }.start()
   }
 

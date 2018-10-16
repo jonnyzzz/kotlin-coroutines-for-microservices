@@ -16,6 +16,7 @@ pluginManagement {
   }
 
   repositories {
+    gradlePluginPortal()
     google()
     jcenter()
     maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
@@ -29,3 +30,5 @@ rootProject.name = 'coroutines-for-microservices'
 include 'service-threads'
 include 'service-rx'
 include 'service-coroutines'
+include 'jmeter'
+

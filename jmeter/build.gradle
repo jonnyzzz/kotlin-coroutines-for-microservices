@@ -1,0 +1,44 @@
+apply plugin: 'de.undercouch.download'
+apply plugin: 'com.github.psxpaul.execfork'
+
+
+final String ext
+if (System.getProperty('os.name', '').toLowerCase().contains('windows')) {
+  ext = ".bat"
+} else {
+  ext = ".sh"
+}
+
+
+final String jmeter_version = "5.0"
+
+final File targetDir = new File(buildDir, "jmeter")
+final File targetZip = new File(buildDir, "jmeter-${jmeter_version}.zip")
+final File jHome = new File(targetDir, "apache-jmeter-${jmeter_version}")
+final File script = new File(jHome, "bin/jmeter${ext}")
+
+task download_jmeter(type: Download) {
+  src "http://www.gutscheine.org/mirror/apache//jmeter/binaries/apache-jmeter-${jmeter_version}.zip"
+  dest targetZip
+  overwrite false
+}
+
+task extract_jmeter(type: Sync, dependsOn: download_jmeter) {
+  from zipTree(targetZip)
+  into targetDir
+}
+
+//com.github.psxpaul.task.ExecFork
+
+task start_jmeter(type: Exec, dependsOn: extract_jmeter) {
+  commandLine script.toString()
+  workingDir jHome.toString()
+  
+//  standardOutput = "$buildDir/daemon.log"
+//  errorOutput = "$buildDir/daemon-error.log"
+
+  doFirst {
+    assert script.isFile() : "Script: $script"
+  }
+}
+

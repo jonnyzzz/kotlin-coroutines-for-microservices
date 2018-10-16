@@ -8,7 +8,9 @@ suspend fun main() = coroutineScope {
   val coroutines = 1_000_000
   repeat(coroutines) {
     launch {
-      delay(100)
+      delay(1_000)
     }
   }
+  //coroutineScope waits for launch {..}
 }
+

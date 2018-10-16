@@ -18,6 +18,9 @@ configure(subprojects - project(':jmeter')) {
   dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2-eap13'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:0.30.2-eap13'
   }
 }
 

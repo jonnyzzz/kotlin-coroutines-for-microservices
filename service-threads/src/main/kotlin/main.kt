@@ -6,11 +6,13 @@ fun main(args: Array<String>) {
   println("Threads example")
 
   val threads = 10_000
-  val sem = CyclicBarrier(threads + 1)
-  List(threads) {
-    Thread(Runnable { sem.await() }).apply { start() }
+  val barrier = CyclicBarrier(threads + 1)
+  repeat(threads) {
+    Thread{
+      barrier.await()
+    }.start()
   }
 
-  sem.await()
+  barrier.await()
   println("All threads are there!")
 }

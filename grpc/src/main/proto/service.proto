@@ -3,19 +3,21 @@ syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "org.jonnyzzz.grpc.generated";
 
-// The greeting service definition.
-service Greeter {
-    // Sends a greeting
-    rpc SayHello (HelloRequest) returns (HelloReply) {}
+
+
+
+service ServiceA {
+    rpc call(StringMessage) returns (StringMessage) {}
 }
 
-// The request message containing the user's name.
-message HelloRequest {
-    string name = 1;
+service ServiceB {
+    rpc call(StringMessage) returns (StringMessage) {}
 }
 
-// The response message containing the greetings
-message HelloReply {
-    string message = 1;
+service ServiceC {
+    rpc call(StringMessage) returns (StringMessage) {}
 }
 
+message StringMessage {
+    string text = 1;
+}

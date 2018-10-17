@@ -3,9 +3,6 @@ package org.jonnyzzz.threads
 import io.grpc.stub.ClientCallStreamObserver
 import io.grpc.stub.ClientResponseObserver
 import io.grpc.stub.StreamObserver
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.functions.Function3
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -15,9 +12,9 @@ import org.jonnyzzz.grpc.generated.ServiceBGrpc
 import org.jonnyzzz.grpc.generated.ServiceCGrpc
 import org.jonnyzzz.grpc.generated.StringMessage
 import java.lang.IllegalStateException
-import java.util.concurrent.Semaphore
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 
 private fun wrap(cont: CancellableContinuation<StringMessage>): StreamObserver<StringMessage> {
@@ -57,9 +54,22 @@ suspend fun ServiceBGrpc.ServiceBStub.call(msg: StringMessage) : StringMessage =
   call(msg, wrap(cont))
 }
 
-suspend fun ServiceCGrpc.ServiceCStub.call(msg: StringMessage) : StringMessage = suspendCancellableCoroutine { cont ->
-  call(msg, wrap(cont))
-}
+typealias Stub = ServiceCGrpc.ServiceCStub
+typealias Message = StringMessage
+
+  suspend fun Stub.call(msg: Message) : Message {
+    return suspendCoroutine { cont ->
+      call(msg, object : StreamObserver<Message> {
+        lateinit var result: Message
+        override fun onNext(value: Message) {
+          result = value
+        }
+
+        override fun onError(t: Throwable) = cont.resumeWithException(t)
+        override fun onCompleted() = cont.resume(result)
+      })
+    }
+  }
 
 suspend fun main(args: Array<String>) = coroutineScope {
   val channel = GRPCUtil.client()

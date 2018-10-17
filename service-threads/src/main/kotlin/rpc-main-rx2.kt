@@ -12,29 +12,6 @@ import org.jonnyzzz.grpc.generated.StringMessage
 import java.util.concurrent.Semaphore
 
 
-fun main(args: Array<String>) {
-  val channel = GRPCUtil.client()
-  val serviceA = ServiceAGrpc.newFutureStub(channel)
-  val serviceB = ServiceBGrpc.newFutureStub(channel)
-  val serviceC = ServiceCGrpc.newFutureStub(channel)
-
-  val completedSemaphore = Semaphore(0)
-
-  val observableA = Observable.fromFuture(serviceA.call(msg("A")))
-  val observableB = Observable.fromFuture(serviceB.call(msg("B")))
-  val observableC = Observable.fromFuture(serviceC.call(msg("C")))
-
-  Observable.zip<StringMessage, StringMessage, StringMessage, String>(
-          observableA,
-          observableB,
-          observableC,
-          Function3 { a, b, c -> "Result: $a + $b + $c" }
-  ).subscribe { println(it) }
-
-  //make main thread wait for the results
-  completedSemaphore.acquire()
-}
-
 private fun wrap(observer: Observer<in String>): StreamObserver<StringMessage> {
   return object : StreamObserver<StringMessage> {
     override fun onNext(value: StringMessage) {
@@ -51,7 +28,7 @@ private fun wrap(observer: Observer<in String>): StreamObserver<StringMessage> {
   }
 }
 
-fun main2(args: Array<String>) {
+fun main(args: Array<String>) {
   val channel = GRPCUtil.client()
   val serviceA = ServiceAGrpc.newStub(channel)
   val serviceB = ServiceBGrpc.newStub(channel)

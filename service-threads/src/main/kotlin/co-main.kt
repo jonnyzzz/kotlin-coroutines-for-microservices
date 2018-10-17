@@ -4,6 +4,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
@@ -13,7 +15,7 @@ suspend fun main() = coroutineScope {
   usedRam()
 
   val coroutines = 1_000_000
-  val barrier = CyclicBarrier(coroutines + 1)
+  val barrier = MutexBarrier(coroutines + 1)
   repeat(coroutines) {
     launch {
       barrier.await()
@@ -45,6 +47,22 @@ private class CyclicBarrier(private val count: Int) {
         emptyList()
       }
     }.forEach { it.resume(Unit) }
+  }
+}
+
+private class MutexBarrier(private val count: Int) {
+  private val mutex = Mutex()
+  private val barrier = Mutex(locked = true)
+  private var waiting = 0
+
+  suspend fun await() {
+    val waiting = mutex.withLock {
+      ++waiting
+    }
+
+    if (waiting == count) barrier.unlock()
+    barrier.lock()
+    barrier.unlock()
   }
 }
 

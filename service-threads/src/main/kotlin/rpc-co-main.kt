@@ -61,12 +61,16 @@ typealias Message = StringMessage
     return suspendCoroutine { cont ->
       call(msg, object : StreamObserver<Message> {
         lateinit var result: Message
+
         override fun onNext(value: Message) {
           result = value
         }
 
-        override fun onError(t: Throwable) = cont.resumeWithException(t)
         override fun onCompleted() = cont.resume(result)
+
+        override fun onError(t: Throwable) {
+          cont.resumeWithException(t)
+        }
       })
     }
   }

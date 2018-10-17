@@ -72,6 +72,7 @@ suspend fun main(args: Array<String>) = coroutineScope {
   val resultC = serviceC.call(msg("C"))
 
   println("Result: $resultA + $resultB + $resultC")
+
 }
 
 private fun msg(text: String) = StringMessage.newBuilder().setText("text $text").build()

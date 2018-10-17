@@ -12,12 +12,11 @@ import kotlin.coroutines.suspendCoroutine
 
   suspend fun suspendingCall() =
     suspendCoroutine<String> { continuation ->
-      //do what every you like
+      //start async process
 
-      //report result
+      //report successful result
       continuation.resume("result")
-      //OR
-      //make it fail
+      //OR make it fail with an exception
       continuation.resumeWithException(RuntimeException())
     }
 

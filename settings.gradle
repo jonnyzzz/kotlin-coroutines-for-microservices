@@ -31,4 +31,5 @@ include 'service-threads'
 include 'service-rx'
 include 'service-coroutines'
 include 'jmeter'
+include 'grpc'
 

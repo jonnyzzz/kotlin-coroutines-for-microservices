@@ -16,7 +16,6 @@ fun main(args: Array<String>) {
   val serviceC = ServiceCGrpc.newStub(channel)
 
   val completedSemaphore = Semaphore(0)
-
   serviceA.call(msg("A"), object : StreamObserver<StringMessage> {
     lateinit var resultA: StringMessage
 
@@ -70,4 +69,20 @@ fun main(args: Array<String>) {
 }
 
 private fun msg(text: String) = StringMessage.newBuilder().setText("text $text").build()
+
+
+fun serviceA(ƒ: (String) -> Unit) = Unit
+fun serviceB(ƒ: (String) -> Unit) = Unit
+fun serviceC(ƒ: (String) -> Unit) = Unit
+
+fun example() {
+
+  serviceA { a ->
+    serviceB { b ->
+      serviceC { c ->
+        println("Result: $a + $b + $c")
+      }
+    }
+  }
+}
 

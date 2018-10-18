@@ -1,6 +1,5 @@
 package org.jonnyzzz.threads
 
-import java.io.File
 import java.util.concurrent.CyclicBarrier
 import java.util.concurrent.Semaphore
 import kotlin.concurrent.thread
@@ -9,7 +8,7 @@ fun main(args: Array<String>) {
 
   val threads = 4_000
 
-  val mutex = Semaphore(1, true)
+  val mutex = Semaphore(1, /* NECESSARY TO AVOID STARVATION */true)
 
   val counters = mutableMapOf<Int, Long>()
   val waitForAll = CyclicBarrier(threads + 1)
@@ -60,7 +59,7 @@ fun main(args: Array<String>) {
   println("   ")
   println("   ")
   println("   ")
-  File("report-${System.currentTimeMillis()}.csv").writeText(counts.joinToString("\n"))
+//  File("report-${System.currentTimeMillis()}.csv").writeText(counts.joinToString("\n"))
 }
 
 

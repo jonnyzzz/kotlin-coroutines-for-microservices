@@ -7,7 +7,7 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
 
-class CyclicBarrier(private val count: Int) {
+class CyclicBarrier2(private val count: Int) {
   private val callbacks = mutableListOf<Continuation<Unit>>()
 
   suspend fun await() = suspendCancellableCoroutine<Unit> { cont ->

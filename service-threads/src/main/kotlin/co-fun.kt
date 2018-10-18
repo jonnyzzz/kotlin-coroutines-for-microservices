@@ -3,6 +3,7 @@
 package org.jonnyzzz.threads
 
 import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.suspendCoroutine
 
 
@@ -39,6 +40,12 @@ class B {
 
 
           = null
+
+  interface Continuation<in T> {
+    val context: CoroutineContext
+    fun resumeWith(result: Result<T>)
+  }
+
 
 }
 

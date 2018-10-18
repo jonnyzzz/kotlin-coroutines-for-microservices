@@ -47,11 +47,12 @@ private fun wrap(cont: CancellableContinuation<StringMessage>): StreamObserver<S
 }
 
 suspend fun ServiceAGrpc.ServiceAStub.call(msg: StringMessage) : StringMessage = suspendCancellableCoroutine { cont ->
-  call(msg, wrap(cont))
+//  call(msg, wrap(cont))
+  cont.resume(msg)
 }
 
 suspend fun ServiceBGrpc.ServiceBStub.call(msg: StringMessage) : StringMessage = suspendCancellableCoroutine { cont ->
-  call(msg, wrap(cont))
+//  call(msg, wrap(cont))
 }
 
 typealias Stub = ServiceCGrpc.ServiceCStub

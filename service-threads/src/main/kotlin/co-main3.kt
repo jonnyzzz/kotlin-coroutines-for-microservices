@@ -2,6 +2,7 @@ package org.jonnyzzz.threads
 
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlin.coroutines.suspendCoroutine
 
 suspend fun main() = coroutineScope {
   println("Coroutines example")

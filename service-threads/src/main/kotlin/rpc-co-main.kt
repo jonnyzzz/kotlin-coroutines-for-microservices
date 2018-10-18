@@ -81,12 +81,15 @@ suspend fun main(args: Array<String>) = coroutineScope {
   val serviceB = ServiceBGrpc.newStub(channel)
   val serviceC = ServiceCGrpc.newStub(channel)
 
-  val resultA = serviceA.call(msg("A"))
-  val resultB = serviceB.call(msg("B"))
-  val resultC = serviceC.call(msg("C"))
+  suspend fun execute() {
+    val resultA = serviceA.call(msg("A"))
+    val resultB = serviceB.call(msg("B"))
+    val resultC = serviceC.call(msg("C"))
 
-  println("Result: $resultA + $resultB + $resultC")
+    println("Result: $resultA + $resultB + $resultC")
+  }
 
+  execute()
 }
 
 private fun msg(text: String) = StringMessage.newBuilder().setText("text $text").build()

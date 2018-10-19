@@ -10,16 +10,20 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-  suspend fun suspendingCall() =
-    suspendCoroutine<String> { continuation ->
-      //start async process
+object SuspendingCallExample {
 
-      //report successful result
-      continuation.resume("result")
-      //OR make it fail with an exception
-      continuation.resumeWithException(RuntimeException())
-    }
 
+        suspend fun await() =
+          suspendCoroutine<String> { continuation ->
+            //start async process
+
+            //report successful result
+            continuation.resume("result")
+            //OR make it fail with an exception
+            continuation.resumeWithException(RuntimeException())
+          }
+
+}
 
 
 suspend fun okSuspendingCall(client: OkHttpClient, request: Request): String {
@@ -42,6 +46,6 @@ suspend fun okSuspendingCall(client: OkHttpClient, request: Request): String {
 
 
 suspend fun main(args: Array<String>) {
-  ::suspendingCall.name
+  SuspendingCallExample::await.name
   ::okSuspendingCall.name
 }

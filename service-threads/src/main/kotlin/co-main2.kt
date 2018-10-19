@@ -7,10 +7,11 @@ import kotlinx.coroutines.launch
 suspend fun main() = coroutineScope {
   val coroutines = 1_000_000
   repeat(coroutines) {
-    launch {
-      delay(1_000)
+    launch {       //starts a coroutine
+      delay(1_000) //non-blocking delay
+      print(".")
     }
   }
-  //coroutineScope waits for launch {..}
+  //coroutineScope {..} waits launch {..}
 }
 

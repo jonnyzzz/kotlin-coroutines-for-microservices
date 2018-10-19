@@ -1,5 +1,6 @@
 package org.jonnyzzz.threads
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -15,3 +16,4 @@ suspend fun main() = coroutineScope {
   //coroutineScope {..} waits launch {..}
 }
 
+val x = CoroutineScope::launch

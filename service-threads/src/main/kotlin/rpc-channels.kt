@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.jonnyzzz.threads
 
 import kotlinx.coroutines.CoroutineScope
@@ -35,10 +37,7 @@ object ExampleScope {
   val serviceC = BaseService
 
 
-
 }
-
-
 
 
 fun CoroutineScope.countActor(channel: ReceiveChannel<Int>) {
@@ -60,7 +59,7 @@ fun CoroutineScope.countActorWithReply(
   launch {
     //state is isolated and thread-safe
     var sum = 0
-    while(isActive) {
+    while (isActive) {
       select<Unit> {
         sumChannel.onReceive { add ->
           sum += add
@@ -74,6 +73,24 @@ fun CoroutineScope.countActorWithReply(
     }
   }
 }
+val N_WORKERS = 3
+
+  fun CoroutineScope.workerPool(
+          data: ReceiveChannel<Int>,
+          result: SendChannel<Int>
+  ) = repeat(N_WORKERS) {
+    launch {
+      for (add in data) {
+        //do some work
+        val work = fibonacci()
+                .elementAt(add)
+        //send it
+        result.send(work)
+      }
+    }
+  }
+
+
 
 fun CoroutineScope.generateData(channel: SendChannel<Int>) {
   repeat(5) {

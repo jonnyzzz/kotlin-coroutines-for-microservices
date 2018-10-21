@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER", "unused")
+
 package org.jonnyzzz.threads
 
 import okhttp3.Call
@@ -23,26 +25,54 @@ object SuspendingCallExample {
             continuation.resumeWithException(RuntimeException())
           }
 
-}
 
 
-suspend fun okSuspendingCall(client: OkHttpClient, request: Request): String {
+  val client = OkHttpClient()
 
-  return suspendCoroutine { continuation ->
-    client.newCall(request)
-            .enqueue(object : Callback {
+  suspend fun useOkHttp(request: Request) {
 
-      override fun onFailure(call: Call, e: IOException) {
-        continuation.resumeWithException(e)
-      }
 
-      override fun onResponse(call: Call, response: Response) {
-        continuation.resume(response.body()?.string() ?: "")
-      }
-    })
+  client.newCall(request).await()
+
+
+
   }
 
 }
+
+
+
+  suspend fun okSuspendingCall(client: OkHttpClient, request: Request): String {
+    return suspendCoroutine { continuation ->
+      client
+        .newCall(request)
+        .enqueue(object : Callback {
+          override fun onFailure(call: Call, e: IOException) {
+            continuation.resumeWithException(e)
+          }
+          override fun onResponse(call: Call, response: Response) {
+            continuation.resume(response.body()?.string() ?: "")
+          }
+        })
+    }
+  }
+
+
+  suspend fun Call.await(): String {
+    return suspendCoroutine { continuation ->
+      enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+          continuation.resumeWithException(e)
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+          continuation.resume(response.body()?.string() ?: "")
+        }
+      })
+    }
+  }
+
+
 
 
 suspend fun main(args: Array<String>) {

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package org.jonnyzzz.threads
 
 
@@ -22,7 +24,7 @@ fun main(args: Array<String>) {
 }
 
 
-fun fibonacci() = sequence {
+fun fibonacci() = iterator {
   var f0 = 0
   var f1 = 1
   while (true) {
@@ -35,3 +37,21 @@ fun fibonacci() = sequence {
   }
 }
 
+
+interface ExampleSequenceFib<T> {
+
+  /**
+   * Yields a value to the [Iterator] being built.
+   */
+  suspend fun yield(value: T)
+
+  /**
+   * Builds a [Sequence] lazily yielding values one by one.
+   */
+  fun <T> sequence(block: suspend SequenceScope<T>.() -> Unit): Sequence<T>
+
+
+
+
+
+}

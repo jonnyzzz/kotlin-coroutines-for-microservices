@@ -76,16 +76,18 @@ fun CoroutineScope.countActorWithReply(
 val N_WORKERS = 3
 
   fun CoroutineScope.workerPool(
-          data: ReceiveChannel<Int>,
-          result: SendChannel<Int>
-  ) = repeat(N_WORKERS) {
-    launch {
-      for (add in data) {
-        //do some work
-        val work = fibonacci()
-                .elementAt(add)
-        //send it
-        result.send(work)
+          input: ReceiveChannel<Int>,
+          output: SendChannel<Int>
+  ) {
+    repeat(N_WORKERS) {
+      //start worker coroutine
+      launch {
+        for (add in input) {
+          //do some work
+          val work = fibonacci().elementAt(add)
+          //send it
+          output.send(work)
+        }
       }
     }
   }

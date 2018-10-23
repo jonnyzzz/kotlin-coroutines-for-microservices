@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "UNUSED_ANONYMOUS_PARAMETER")
 
 package org.jonnyzzz.threads
 
@@ -60,6 +60,7 @@ fun CoroutineScope.countActorWithReply(
     //state is isolated and thread-safe
     var sum = 0
     while (isActive) {
+
       select<Unit> {
         sumChannel.onReceive { add ->
           sum += add
@@ -70,9 +71,28 @@ fun CoroutineScope.countActorWithReply(
           println("reset!")
         }
       }
+
     }
   }
 }
+
+
+  suspend fun selectExample(
+          channelA: ReceiveChannel<Int>,
+          channelB: ReceiveChannel<Unit>) {
+    //resumes on one of the following
+    select<Unit> {
+      channelA.onReceive { msg ->
+        //handle message, update state
+      }
+
+      channelB.onReceive { msg ->
+        //handle message, update state
+      }
+    }
+  }
+
+
 val N_WORKERS = 3
 
   fun CoroutineScope.workerPool(

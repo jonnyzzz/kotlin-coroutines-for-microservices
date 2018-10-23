@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
 }
 
 
-fun fibonacci() = iterator {
+fun fibonacci() = sequence {
   var f0 = 0
   var f1 = 1
   while (true) {

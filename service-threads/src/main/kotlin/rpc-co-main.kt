@@ -12,6 +12,8 @@ import org.jonnyzzz.grpc.generated.ServiceBGrpc
 import org.jonnyzzz.grpc.generated.ServiceCGrpc
 import org.jonnyzzz.grpc.generated.StringMessage
 import java.lang.IllegalStateException
+import java.lang.RuntimeException
+import javax.swing.text.html.HTMLDocument
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -83,7 +85,11 @@ suspend fun main(args: Array<String>) = coroutineScope {
   val serviceC = ServiceCGrpc.newStub(channel)
 
   suspend fun execute() {
-    val resultA = serviceA.call(msg("A"))
+    val resultA = try {
+      serviceA.call(msg("A"))
+    } catch (t: RuntimeException) {
+      "failed ${t.message}"
+    }
     val resultB = serviceB.call(msg("B"))
     val resultC = serviceC.call(msg("C"))
 

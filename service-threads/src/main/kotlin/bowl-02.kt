@@ -11,8 +11,11 @@ fun main(args: Array<String>) {
 
 
 
-  //also delegation
+  //also delegation and lazy values
   val lazyValue by lazy { fibonacci().elementAt(555) }
 
+
+  val map = mutableMapOf("eugene" to "@jonnyzzz")
+  var valueFromMap  by map
 }
 
